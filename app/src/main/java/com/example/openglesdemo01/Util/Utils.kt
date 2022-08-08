@@ -15,6 +15,10 @@ import java.io.IOException
 import java.io.InputStreamReader
 import kotlin.math.tan
 
+/**
+ * 将着色器加载到内存中
+ * @param resId  raw 目录下的 GLSL文件id
+ */
 fun Context.readStringFromRaw(@RawRes resId: Int): String {
     //通过Buffer流来读取GLSL文件
     return runCatching {

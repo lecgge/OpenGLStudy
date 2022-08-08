@@ -16,6 +16,12 @@ import javax.microedition.khronos.opengles.GL10
 class AirHockeyRenderer(private val context: Context) : GLSurfaceView.Renderer {
     private var programId = 0
 
+    /**
+     * 使用ByteBuffer.allocateDirect()分配一块本地内存，这块内存不会被垃圾回收器管理，传入空间大小，单位字节
+     * order()告诉字节缓冲区按照本地字节序组织内存
+     * asFloatBuffer() 得到一个可以反映底层字节的FloatBuffer类实例。
+     */
+
     private val vertexData: FloatBuffer = ByteBuffer
         .allocateDirect(tableVerticesWithTriangles.size * BYTES_PER_FLOAT)
         .order(ByteOrder.nativeOrder())
@@ -105,9 +111,18 @@ class AirHockeyRenderer(private val context: Context) : GLSurfaceView.Renderer {
         uColorLocation = glGetUniformLocation(programId, U_COLOR)
         aPositionLocation = glGetAttribLocation(programId, A_POSITION)
 
-        // 也可以调用flip来变为读取模式
+        // 将缓冲区的读取指针设置为0，确保它会从头开始读取数据
         vertexData.position(0)
-        // 传输顶点数组
+        // 传输顶点数组，告诉OpenGL，它可以在缓冲区vertexData中找到a_Position对应的数据
+        /**
+         * 第一个参数 ： int index ->这个是属性位置
+         * 第二个参数 ： int size ->这个是每个属性的数据的计数，由于我们只定义了顶点的x,y，因此我们在这里传入2；
+         * 但是我们在顶点着色器中定义了每个顶点是vec4,它有四个分量。如果一个分量没有被指定值，默认情况下，OpenGL会把前3个分量设为0，最后一个分量设为1
+         * 第三个参数 ： int type 这是数据的类型。
+         * 第四个参数 ： boolean normalized 只有使用整数数据的时候，这个参数才有意义。因此可以暂时把它安全地忽略
+         * 第五个参数 ： int stride 只有当一个数组存储多余一个属性时，它才有意义。如：在顶点数组中，不仅存储了顶点数据，还存储了颜色数据
+         * 第六个参数 ： Buffer ptr 这个参数告诉OpenGL去哪读取数据，
+         */
         glVertexAttribPointer(
             aPositionLocation, POSITION_COMPONENT_COUNT,
             GL_FLOAT, false, 0, vertexData
