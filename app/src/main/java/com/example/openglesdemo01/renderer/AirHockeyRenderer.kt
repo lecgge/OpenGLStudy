@@ -3,6 +3,7 @@ package com.example.openglesdemo01.renderer
 import android.content.Context
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
+import android.util.Log
 import com.example.openglesdemo01.R
 import com.example.openglesdemo01.Util.isDebugVersion
 import com.example.openglesdemo01.Util.readStringFromRaw
@@ -143,6 +144,7 @@ class AirHockeyRenderer(private val context: Context) : GLSurfaceView.Renderer {
         // 第二个参数告诉OpenGL从顶点数组的开头开始读取顶点（offset），
         // 第三个参数告诉OpenGL读取六个顶点。
         glDrawArrays(GL_TRIANGLES,0,6)
+
 
         glUniform4f(uColorLocation,1f,0f,0f,1f)
         glDrawArrays(GL_LINES,6,2)
