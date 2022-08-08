@@ -16,7 +16,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         glSurfaceView = GLSurfaceView(this)
-        glSurfaceView.setRenderer(DemoRenderer01())
+        glSurfaceView.setEGLContextClientVersion(2)
+        glSurfaceView.setRenderer(DemoRenderer01(this))
         glSurfaceView.renderMode = GLSurfaceView.RENDERMODE_CONTINUOUSLY
 
         setContentView(glSurfaceView)
