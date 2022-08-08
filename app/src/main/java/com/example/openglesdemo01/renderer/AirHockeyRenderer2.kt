@@ -115,8 +115,12 @@ class AirHockeyRenderer2(private val context: Context) : GLSurfaceView.Renderer 
         vertexData.position(0)
         // 传输顶点数组
         glVertexAttribPointer(
-            aPositionLocation, POSITION_COMPONENT_COUNT,
-            GL_FLOAT, false, STRIDE, vertexData
+            aPositionLocation,
+            POSITION_COMPONENT_COUNT,
+            GL_FLOAT,
+            false,
+            STRIDE,
+            vertexData
         )
 
 
@@ -125,7 +129,14 @@ class AirHockeyRenderer2(private val context: Context) : GLSurfaceView.Renderer 
 
         // 重置position，使其对准第一个color数据的开头
         vertexData.position(POSITION_COMPONENT_COUNT)
-        glVertexAttribPointer(aColorLocation, COLOR_COMPONENT_COUNT, GL_FLOAT,false, STRIDE, vertexData)
+        glVertexAttribPointer(
+            aColorLocation,
+            COLOR_COMPONENT_COUNT,
+            GL_FLOAT,
+            false,
+            STRIDE,
+            vertexData
+        )
         glEnableVertexAttribArray(aColorLocation)
 
 
@@ -141,25 +152,25 @@ class AirHockeyRenderer2(private val context: Context) : GLSurfaceView.Renderer 
             10f
         )
 
-        setIdentityM(modelMatrix,0)
-        translateM(modelMatrix,0,0f,0f,-2f)
+        setIdentityM(modelMatrix, 0)
+        translateM(modelMatrix, 0, 0f, 0f, -2f)
 
         val temp = FloatArray(16)
         //矩阵相乘
-        multiplyMM(temp,0,projectionMatrix,0,modelMatrix,0)
-        System.arraycopy(temp,0,projectionMatrix,0,temp.size)
+        multiplyMM(temp, 0, projectionMatrix, 0, modelMatrix, 0)
+        System.arraycopy(temp, 0, projectionMatrix, 0, temp.size)
     }
 
     override fun onDrawFrame(gl: GL10?) {
         glClear(GL_COLOR_BUFFER_BIT)
-        glUniformMatrix4fv(uMatrixLocation,1,false,projectionMatrix,0)
+        glUniformMatrix4fv(uMatrixLocation, 1, false, projectionMatrix, 0)
 
-        glDrawArrays(GL_TRIANGLE_FAN,0,6)
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 6)
 
-        glDrawArrays(GL_LINES,6,2)
+        glDrawArrays(GL_LINES, 6, 2)
 
-        glDrawArrays(GL_POINTS,8,1)
+        glDrawArrays(GL_POINTS, 8, 1)
 
-        glDrawArrays(GL_POINTS,9,1)
+        glDrawArrays(GL_POINTS, 9, 1)
     }
 }
