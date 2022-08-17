@@ -5,6 +5,8 @@ import android.opengl.GLSurfaceView
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.openglesdemo01.renderer.DemoRenderer01
+import com.example.openglesdemo01.renderer.DemoRenderer02
+import com.example.openglesdemo01.renderer.DemoRenderer03
 
 const val TAG = "MainActivity"
 
@@ -17,7 +19,7 @@ class MainActivity : AppCompatActivity() {
 
         glSurfaceView = GLSurfaceView(this)
         glSurfaceView.setEGLContextClientVersion(2)
-        glSurfaceView.setRenderer(DemoRenderer01(this))
+        glSurfaceView.setRenderer(DemoRenderer03(this))
         glSurfaceView.renderMode = GLSurfaceView.RENDERMODE_CONTINUOUSLY
 
         setContentView(glSurfaceView)

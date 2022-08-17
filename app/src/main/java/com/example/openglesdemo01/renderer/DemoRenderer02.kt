@@ -19,9 +19,9 @@ import javax.microedition.khronos.opengles.GL10
 
 /**
  *
- * 点
+ * 线
  */
-class DemoRenderer01(val context: Context) : GLSurfaceView.Renderer {
+class DemoRenderer02(val context: Context) : GLSurfaceView.Renderer {
 
 
     private var uColorLocation: Int = 0
@@ -104,8 +104,7 @@ class DemoRenderer01(val context: Context) : GLSurfaceView.Renderer {
 
         glUniform4f(uColorLocation,1f,1f,1f,1f)
         Log.d("TAG", "onSurfaceCreated: $aPositionLocation")
-        glDrawArrays(GL_POINTS,1,1)
-        glDrawArrays(GL_POINTS,2,1)
+        glDrawArrays(GL_LINES,1,2)
     }
 
     fun ReadStringFromRaw(@RawRes resId: Int): String {

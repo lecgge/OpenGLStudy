@@ -1,5 +1,5 @@
 # OpenGLStudy
-
+# 升级为演示项目
 
 ## 一个使用OpenGLES的基础demo
 
