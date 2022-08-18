@@ -144,7 +144,7 @@ class AirHockeyRenderer (private val context: Context) : GLSurfaceView.Renderer 
     override fun onDrawFrame(gl: GL10?) {
         glClear(GL_COLOR_BUFFER_BIT)//我们调用glClear(GL_COLOR_BUFFER_BIT)擦除了屏幕上的所有颜色，并使用我们之前调用glClearColor()来定义的颜色填充屏幕。
 
-        Matrix.rotateM(projectionMatrix,0,0.1f,0f,1f,1f)
+        Matrix.rotateM(projectionMatrix,0,0.1f,0f,1f,0f)
 
         //画桌子
         glDrawArrays(GL_TRIANGLE_FAN, 0, tableVerticesWithTriangles.size / 6)//绘制桌子,第一个参数告诉OpenGL想要画三角形,第二个参数告诉OpenGL从顶点数组的开头开始读取顶点（offset）,第三个参数告诉OpenGL读取六个顶点
