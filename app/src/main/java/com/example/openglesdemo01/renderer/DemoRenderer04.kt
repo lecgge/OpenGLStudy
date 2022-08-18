@@ -5,10 +5,10 @@ import android.content.res.Resources
 import android.opengl.GLES20
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
+import android.opengl.Matrix.orthoM
 import android.util.Log
 import androidx.annotation.RawRes
 import com.example.openglesdemo01.R
-import com.example.openglesdemo01.model.Ball
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -24,12 +24,16 @@ import javax.microedition.khronos.opengles.GL10
  */
 class DemoRenderer04(val context: Context) : GLSurfaceView.Renderer {
 
-    private lateinit var ball: Ball
+    private val projectionMatrix: FloatArray = FloatArray(16)
+    /**
+     * 缓存u_Matrix的位置
+     */
+    private var uMatrixLocation = 0
 
     private var uColorLocation: Int = 0
     private var aPositionLocation: Int = 0
 
-    private var programObjectId: Int = 0
+    private var programObjectId : Int = 0
 
     private val vertexData: FloatBuffer = ByteBuffer
         .allocateDirect(tableTriangle.size * BYTES_PER_FLOAT)
@@ -37,39 +41,32 @@ class DemoRenderer04(val context: Context) : GLSurfaceView.Renderer {
         .asFloatBuffer()
         .put(tableTriangle)
 
-    companion object {
+    companion object{
         private const val tag = "Shader"
 
         private const val U_COLOR = "u_Color"
 
         private const val A_POSITION = "a_Position"
 
+        private const val U_MATRIX = "u_Matrix"
+
         private const val POSITION_COMPONENT_COUNT = 3
 
 
         const val BYTES_PER_FLOAT = 4
 
-        private val tableTriangle: FloatArray = floatArrayOf()
-
-        // 初始化顶点数据的方法
-        fun initVertexData() {
-            // 顶点坐标数据的初始化================begin============================
-
-            // 顶点坐标数据的初始化================begin============================
-            val alVertix = ArrayList<Float>() // 存放顶点坐标的ArrayList
-
-            val angleSpan = 10 // 将球进行单位切分的角度
-
-
-        }
-
+        private val tableTriangle : FloatArray = floatArrayOf(
+            //x,y,z
+            0f,0f,0f,
+            -0.5f,-0.5f,0.5f,
+            0.5f,-0.5f,0.5f,
+            0.5f,-0.5f,-0.5f,
+            -0.5f,-0.5f,-0.5f,
+            -0.5f,-0.5f,0.5f,
+        )
     }
-
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
-        glClearColor(0f, 0f, 0f, 0f)
-
-
-        GLES20.glEnable(GL_DEPTH_TEST)
+        glClearColor(0f,0f,0f,0f)
 
 
         val vertexShader = compileVertexShader(ReadStringFromRaw(R.raw.ball_vertex_shader))
@@ -80,12 +77,13 @@ class DemoRenderer04(val context: Context) : GLSurfaceView.Renderer {
         if (programObjectId == 0) {
             return
         }
-        glAttachShader(programObjectId, vertexShader)
-        glAttachShader(programObjectId, fragmentShader)
+        uMatrixLocation = glGetUniformLocation(programObjectId, U_MATRIX)
+        glAttachShader(programObjectId,vertexShader)
+        glAttachShader(programObjectId,fragmentShader)
 
         glLinkProgram(programObjectId)
         val linkStatus = IntArray(1)
-        glGetProgramiv(programObjectId, GL_LINK_STATUS, linkStatus, 0)
+        glGetProgramiv(programObjectId, GL_LINK_STATUS,linkStatus,0)
 
         if (linkStatus[0] == 0) {
             glDeleteProgram(programObjectId)
@@ -104,7 +102,7 @@ class DemoRenderer04(val context: Context) : GLSurfaceView.Renderer {
 
         glVertexAttribPointer(
             aPositionLocation, POSITION_COMPONENT_COUNT,
-            GL_FLOAT, false, 0, ball.floatBuffer
+            GL_FLOAT, false, 0, vertexData
         )
 
         glEnableVertexAttribArray(aPositionLocation)
@@ -112,15 +110,24 @@ class DemoRenderer04(val context: Context) : GLSurfaceView.Renderer {
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
-        glViewport(0, 0, width, height)
+        glViewport(0,0,width, height)
+        // 是否为横屏
+        val isLandscape = width > height
+        val aspectRatio = if (isLandscape) (width.toFloat()) / (height.toFloat()) else
+            (height.toFloat()) / (width.toFloat())
+        if (isLandscape) {
+            orthoM(projectionMatrix, 0, -aspectRatio, aspectRatio, -1f, 1f, -1f, 1f)
+        } else {
+            // 竖屏或正方形屏幕
+            orthoM(projectionMatrix, 0, -1f, 1f, -aspectRatio, aspectRatio, -1f, 1f)
+        }
     }
 
     override fun onDrawFrame(gl: GL10?) {
         glClear(GL_COLOR_BUFFER_BIT)
-
-        glUniform4f(uColorLocation, 1f, 1f, 1f, 1f)
+        glUniformMatrix4fv(uMatrixLocation, 1, false, projectionMatrix, 0)
         Log.d("TAG", "onSurfaceCreated: $aPositionLocation")
-        glDrawArrays(GL_TRIANGLES, 0, ball.vertices.size / 3)
+        glDrawArrays(GL_TRIANGLES,0,3)
     }
 
     fun ReadStringFromRaw(@RawRes resId: Int): String {
@@ -163,23 +170,21 @@ class DemoRenderer04(val context: Context) : GLSurfaceView.Renderer {
     fun compileShader(type: Int, shaderCode: String): Int {
         //创建一个新的着色器对象，将这个对象的ID存入shaderObjectId
         //这个整形值就是OpenGL对象的引用。
-        val shaderObjectId = glCreateShader(type)
+        val  shaderObjectId = glCreateShader(type)
         if (type == 0) {
             Log.w(tag, "Could note create new shader")
             return 0
         }
         //将着色器代码上传到着色器对象中
-        glShaderSource(shaderObjectId, shaderCode)
+        glShaderSource(shaderObjectId,shaderCode)
         //编译先前上传到sharderObjectId的源代码
         glCompileShader(shaderObjectId)
         //取出编译状态
-        val compilerStatus: IntArray = IntArray(1)
-        glGetShaderiv(shaderObjectId, GL_COMPILE_STATUS, compilerStatus, 0)
+        val compilerStatus:IntArray = IntArray(1)
+        glGetShaderiv(shaderObjectId, GL_COMPILE_STATUS,compilerStatus,0)
 
-        Log.d(
-            tag, "Results of compiling source:" +
-                    "\n$shaderCode\n:${glGetShaderInfoLog(shaderObjectId)}"
-        )
+        Log.d(tag, "Results of compiling source:" +
+                "\n$shaderCode\n:${glGetShaderInfoLog(shaderObjectId)}")
 
         if (compilerStatus[0] == 0) {
             // 编译失败，删除着色器
