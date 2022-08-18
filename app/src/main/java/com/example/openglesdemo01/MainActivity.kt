@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.openglesdemo01.renderer.DemoRenderer01
 import com.example.openglesdemo01.renderer.DemoRenderer02
 import com.example.openglesdemo01.renderer.DemoRenderer03
+import com.example.openglesdemo01.renderer.DemoRenderer04
 
 const val TAG = "MainActivity"
 
@@ -19,7 +20,7 @@ class MainActivity : AppCompatActivity() {
 
         glSurfaceView = GLSurfaceView(this)
         glSurfaceView.setEGLContextClientVersion(2)
-        glSurfaceView.setRenderer(DemoRenderer03(this))
+        glSurfaceView.setRenderer(DemoRenderer04(this))
         glSurfaceView.renderMode = GLSurfaceView.RENDERMODE_CONTINUOUSLY
 
         setContentView(glSurfaceView)
