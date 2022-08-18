@@ -6,7 +6,6 @@ import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import android.opengl.Matrix
 import android.opengl.Matrix.orthoM
-import android.util.Log
 import com.example.openglesdemo01.R
 import com.example.openglesdemo01.ShaderHelper
 import com.example.openglesdemo01.isDebugVersion
@@ -18,7 +17,7 @@ import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
 /**
- *@Author QiYuZhen
+ *正四棱锥
  *
  */
 class AirHockeyRenderer (private val context: Context) : GLSurfaceView.Renderer {
