@@ -17,10 +17,10 @@ import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
 /**
- *正四棱锥
+ *正方体
  *
  */
-class AirHockeyRenderer (private val context: Context) : GLSurfaceView.Renderer {
+class DemoRenderer06 (private val context: Context) : GLSurfaceView.Renderer {
 
 
     /**
@@ -46,17 +46,52 @@ class AirHockeyRenderer (private val context: Context) : GLSurfaceView.Renderer 
         private const val STRIDE=(POSITION_COMPONENT_COUNT+ COLOR_COMPONENT_COUNT)* BYTES_PER_FLOAT  //使用STRIDE来告诉OpenGL每个位置数据之间有多少字节，以便它知道需要跳过多远
     }
     //添加一个属性来存储我们得到的坐标
-    private val tableVerticesWithTriangles: FloatArray = floatArrayOf(//顶点属性数组  可以存储带有小数点的位置//我们为每个顶点增加了三个额外的数字。这些数字代表红色、绿色和蓝色
+    private val tableVerticesWithTriangles: FloatArray = floatArrayOf(
+//顶点属性数组  可以存储带有小数点的位置//我们为每个顶点增加了三个额外的数字。这些数字代表红色、绿色和蓝色
 
         // 属性的顺序: X, Y,Z, R, G, B
-        // 三角形扇形
-        0f,0f,0f,1f, 1f, 1f,
-        -0.5f,-0.5f,0.5f,1f, 0f, 0f,
-        0.5f,-0.5f,0.5f,0f, 1f, 0f,
-        0.5f,-0.5f,-0.5f,0f, 0f, 1f,
-        -0.5f,-0.5f,-0.5f,0f, 1f, 1f,
-        -0.5f,-0.5f,0.5f,1f, 0f, 0f,
-
+        // 第一个正四棱锥
+        0f, 0f, 0f, 1f, 1f, 1f,
+        -0.5f, -0.5f, 0.5f, 1f, 0f, 0f,
+        0.5f, -0.5f, 0.5f, 0f, 1f, 0f,
+        0.5f, -0.5f, -0.5f, 0f, 0f, 1f,
+        -0.5f, -0.5f, -0.5f, 0f, 1f, 1f,
+        -0.5f, -0.5f, 0.5f, 1f, 0f, 0f,
+        // 第二个正四棱锥
+        0f, 0f, 0f, 1f, 1f, 1f,
+        -0.5f, -0.5f, 0.5f, 1f, 0f, 0f,
+        0.5f, -0.5f, 0.5f, 0f, 1f, 0f,
+        0.5f, 0.5f, 0.5f, 1f, 0.5f, 0f,
+        -0.5f, 0.5f, 0.5f, 0f, 1f, 0.5f,
+        -0.5f, -0.5f, 0.5f, 1f, 0f, 0f,
+        // 第三个正四棱锥
+        0f, 0f, 0f, 1f, 1f, 1f,
+        0.5f, -0.5f, 0.5f, 0f, 1f, 0f,
+        0.5f,-0.5f,-0.5f,1f,0f,0f,
+        0.5f,0.5f,-0.5f,0f,0.5f,1f,
+        0.5f,0.5f,0.5f,1f,0.5f,0f,
+        0.5f, -0.5f, 0.5f, 0f, 1f, 0f,
+        // 第四个正四棱锥
+        0f, 0f, 0f, 1f, 1f, 1f,
+        -0.5f,-0.5f,-0.5f,0f,0f,1f,
+        0.5f, -0.5f, -0.5f, 1f, 0f, 0f,
+        0.5f, 0.5f, -0.5f, 0f, 0.5f, 1f,
+        -0.5f, 0.5f, -0.5f, 1f, 0.5f, 0f,
+        -0.5f, -0.5f, -0.5f, 0f, 0f, 1f,
+        // 第五个正四棱锥
+        0f, 0f, 0f, 1f, 1f, 1f,
+        -0.5f, -0.5f, 0.5f, 1f, 0f, 0f,
+        -0.5f,-0.5f,-0.5f,0f,0f,1f,
+        -0.5f,0.5f,-0.5f,1f,0.5f,0f,
+        -0.5f,0.5f,0.5f,0f,1f,0.5f,
+        -0.5f, -0.5f, 0.5f, 1f, 0f, 0f,
+        // 第六个正四棱锥
+        0f, 0f, 0f, 1f, 1f, 1f,
+        -0.5f, 0.5f, 0.5f, 0f, 1f, 0.5f,
+        0.5f, 0.5f, 0.5f, 1f, 0.5f, 0f,
+        0.5f, 0.5f, -0.5f, 0f, 0.5f, 1f,
+        -0.5f, 0.5f, -0.5f, 1f, 0.5f, 0f,
+        -0.5f, 0.5f, 0.5f, 0f, 1f, 0.5f,
 
     )
     //将数据复制到本机内存
@@ -118,6 +153,7 @@ class AirHockeyRenderer (private val context: Context) : GLSurfaceView.Renderer 
             ShaderHelper.validateProgram(programId)
         }
 
+        glEnable(GL_DEPTH_TEST)
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
@@ -136,17 +172,25 @@ class AirHockeyRenderer (private val context: Context) : GLSurfaceView.Renderer 
             orthoM(projectionMatrix,0,-1f,1f,-aspectRatio,aspectRatio,-1f,1f)
         }
 
+
     }
     /**
      * 往屏幕绘制内容
      */
     override fun onDrawFrame(gl: GL10?) {
-        glClear(GL_COLOR_BUFFER_BIT)//我们调用glClear(GL_COLOR_BUFFER_BIT)擦除了屏幕上的所有颜色，并使用我们之前调用glClearColor()来定义的颜色填充屏幕。
+        glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)//我们调用glClear(GL_COLOR_BUFFER_BIT)擦除了屏幕上的所有颜色，并使用我们之前调用glClearColor()来定义的颜色填充屏幕。
 
-        Matrix.rotateM(projectionMatrix,0,0.1f,0f,1f,0f)
 
-        //画桌子
-        glDrawArrays(GL_TRIANGLE_FAN, 0, tableVerticesWithTriangles.size / 6)//绘制桌子,第一个参数告诉OpenGL想要画三角形,第二个参数告诉OpenGL从顶点数组的开头开始读取顶点（offset）,第三个参数告诉OpenGL读取六个顶点
+        Matrix.rotateM(projectionMatrix,0,0.3f,1f,1f,0f)
+
+
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 6)
+
+        glDrawArrays(GL_TRIANGLE_FAN, 6, 6)
+        glDrawArrays(GL_TRIANGLE_FAN, 12, 6)
+        glDrawArrays(GL_TRIANGLE_FAN, 18, 6)
+        glDrawArrays(GL_TRIANGLE_FAN, 24, 6)
+        glDrawArrays(GL_TRIANGLE_FAN, 30, 6)
 
 
         glUniformMatrix4fv(uMatrixLocation,1,false,projectionMatrix,0)//uMatrixLocation uniform变量的位置 ，1是需要修改的矩阵的个数，false指明矩阵是列优先矩阵还是行优先矩阵，列优先矩阵应传入false，projectionMatrix表示矩阵的一维数组，0表示偏移量
