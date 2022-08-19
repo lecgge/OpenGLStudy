@@ -10,6 +10,5 @@ glEnable(GL_DEPTH_TEST)
 glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 ```
 )
-下一步：创建一个圆
 
-下下一步:创建一个球
+下一步:创建一个球

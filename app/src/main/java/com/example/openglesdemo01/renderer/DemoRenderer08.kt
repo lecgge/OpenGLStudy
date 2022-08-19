@@ -16,12 +16,15 @@ import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
 
 /**
- *正方体---第二种实现方式
+ *圆
  *
  */
-class DemoRenderer07(private val context: Context) : GLSurfaceView.Renderer {
+class DemoRenderer08(private val context: Context) : GLSurfaceView.Renderer {
 
 
     /**
@@ -52,113 +55,43 @@ class DemoRenderer07(private val context: Context) : GLSurfaceView.Renderer {
     //添加一个属性来存储我们得到的坐标
     private val tableVerticesWithTriangles: FloatArray
 
-    private val tempArray = floatArrayOf(
-        // 属性的顺序: X, Y,Z, R, G, B
-        // 第一个正四棱锥
-        0f, -0.5f, 0f, 1f, 1f, 1f,
-        -0.5f, -0.5f, 0.5f, 1f, 0f, 0f,
-        0.5f, -0.5f, 0.5f, 0f, 1f, 0f,
-        0.5f, -0.5f, -0.5f, 0f, 0f, 1f,
-        -0.5f, -0.5f, -0.5f, 0f, 1f, 1f,
-        -0.5f, -0.5f, 0.5f, 1f, 0f, 0f,
-    )
+
+    private val radius = 0.5
+    val numPoints  = 50+2
 
     init {
 
         val temp : ArrayList<Float> = ArrayList()
-        for (i in 0..500) {
-            temp.add(tempArray[0])
-            temp.add(tempArray[1]+i*0.001f)
-            temp.add(tempArray[2])
-            temp.add(tempArray[3])
-            temp.add(tempArray[4])
-            temp.add(tempArray[5])
+        //添加圆心
+        temp.add(0f)
+        temp.add(0f)
+        temp.add(0f)
 
-            temp.add(tempArray[6])
-            temp.add(tempArray[7]+i*0.001f)
-            temp.add(tempArray[8])
-            temp.add(tempArray[9])
-            temp.add(tempArray[10])
-            temp.add(tempArray[11])
+        temp.add(1f)
+        temp.add(0f)
+        temp.add(0f)
 
-            temp.add(tempArray[12])
-            temp.add(tempArray[13]+i*0.001f)
-            temp.add(tempArray[14])
-            temp.add(tempArray[15])
-            temp.add(tempArray[16])
-            temp.add(tempArray[17])
+        var angleInRadians: Double
 
-            temp.add(tempArray[18])
-            temp.add(tempArray[19]+i*0.001f)
-            temp.add(tempArray[20])
-            temp.add(tempArray[21])
-            temp.add(tempArray[22])
-            temp.add(tempArray[23])
+        for (i in 0..52) {
+            angleInRadians = (i.toDouble()) / (numPoints.toDouble()) * PI * 2
+            temp.add((radius* cos(angleInRadians).toFloat()).toFloat())
+            temp.add((radius* sin(angleInRadians).toFloat()).toFloat())
+            temp.add(0f)
 
-            temp.add(tempArray[24])
-            temp.add(tempArray[25]+i*0.001f)
-            temp.add(tempArray[26])
-            temp.add(tempArray[27])
-            temp.add(tempArray[28])
-            temp.add(tempArray[29])
-
-            temp.add(tempArray[30])
-            temp.add(tempArray[31]+i*0.001f)
-            temp.add(tempArray[32])
-            temp.add(tempArray[33])
-            temp.add(tempArray[34])
-            temp.add(tempArray[35])
-
-            temp.add(tempArray[0])
-            temp.add(-(tempArray[1]+i*0.001f))
-            temp.add(tempArray[2])
-            temp.add(tempArray[3])
-            temp.add(tempArray[4])
-            temp.add(tempArray[5])
-
-            temp.add(tempArray[6])
-            temp.add(-(tempArray[7]+i*0.001f))
-            temp.add(tempArray[8])
-            temp.add(tempArray[9])
-            temp.add(tempArray[10])
-            temp.add(tempArray[11])
-
-            temp.add(tempArray[12])
-            temp.add(-(tempArray[13]+i*0.001f))
-            temp.add(tempArray[14])
-            temp.add(tempArray[15])
-            temp.add(tempArray[16])
-            temp.add(tempArray[17])
-
-            temp.add(tempArray[18])
-            temp.add(-(tempArray[19]+i*0.001f))
-            temp.add(tempArray[20])
-            temp.add(tempArray[21])
-            temp.add(tempArray[22])
-            temp.add(tempArray[23])
-
-            temp.add(tempArray[24])
-            temp.add(-(tempArray[25]+i*0.001f))
-            temp.add(tempArray[26])
-            temp.add(tempArray[27])
-            temp.add(tempArray[28])
-            temp.add(tempArray[29])
-
-            temp.add(tempArray[30])
-            temp.add(-(tempArray[31]+i*0.001f))
-            temp.add(tempArray[32])
-            temp.add(tempArray[33])
-            temp.add(tempArray[34])
-            temp.add(tempArray[35])
+            temp.add(1f)
+            temp.add(0f)
+            temp.add(0f)
         }
 
         tableVerticesWithTriangles = FloatArray(temp.size)
         var i = 0
         temp.forEach {
             tableVerticesWithTriangles[i++] = it
+            Log.d("TAG", "array: $it")
         }
 
-        Log.d("TAG", "arraySize: ${tableVerticesWithTriangles.size/36}")
+        Log.d("TAG", "arraySize: ${tableVerticesWithTriangles.size/6}")
 
     }
 
@@ -252,12 +185,12 @@ class DemoRenderer07(private val context: Context) : GLSurfaceView.Renderer {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)//我们调用glClear(GL_COLOR_BUFFER_BIT)擦除了屏幕上的所有颜色，并使用我们之前调用glClearColor()来定义的颜色填充屏幕。
 
 
-        Matrix.rotateM(projectionMatrix, 0, 1f, 1f, 1f, 0f)
+        Matrix.rotateM(projectionMatrix, 0, 0.5f, 1f, 0f, 0f)
 
 
-        for (i in 0 until (tableVerticesWithTriangles.size/36)) {
-            glDrawArrays(GL_TRIANGLE_FAN, i*6, 6)
-        }
+
+        glDrawArrays(GL_TRIANGLE_FAN, 0, tableVerticesWithTriangles.size/6)
+
 
 
 

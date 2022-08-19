@@ -3,9 +3,7 @@ package com.example.openglesdemo01
 import android.opengl.GLSurfaceView
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.airhockey.AirHockeyRender.DemoRenderer05
-import com.example.airhockey.AirHockeyRender.DemoRenderer06
-import com.example.airhockey.AirHockeyRender.DemoRenderer07
+import com.example.airhockey.AirHockeyRender.*
 
 const val TAG = "MainActivity"
 
@@ -18,7 +16,7 @@ class MainActivity : AppCompatActivity() {
 
         glSurfaceView = GLSurfaceView(this)
         glSurfaceView.setEGLContextClientVersion(2)
-        glSurfaceView.setRenderer(DemoRenderer07(this))
+        glSurfaceView.setRenderer(DemoRenderer09(this))
         glSurfaceView.renderMode = GLSurfaceView.RENDERMODE_CONTINUOUSLY
 
         setContentView(glSurfaceView)
